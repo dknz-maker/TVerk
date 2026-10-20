@@ -88,15 +88,8 @@ public class MainActivity extends Activity {
     @Override
     protected void attachBaseContext(android.content.Context base) {
         cfg = Config.load(base);
-        if (!cfg.lang.isEmpty()) {
-            // Home screen language can differ from the system's (configured via adb).
-            Locale locale = Locale.forLanguageTag(cfg.lang);
-            android.content.res.Configuration conf = new android.content.res.Configuration(base.getResources().getConfiguration());
-            conf.setLocale(locale);
-            Locale.setDefault(locale); // TextClock formats with the process default locale
-            base = base.createConfigurationContext(conf);
-        }
-        super.attachBaseContext(base);
+        // Home screen language can differ from the system's (configured via adb).
+        super.attachBaseContext(Config.localized(base));
     }
 
     private static String cap(String s) {

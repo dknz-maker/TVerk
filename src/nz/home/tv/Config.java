@@ -52,6 +52,17 @@ final class Config {
         hide.add(SELF);
     }
 
+    /** Applies the configured language (if any) to a context; used by the home screen and the screensaver. */
+    static Context localized(Context base) {
+        String lang = load(base).lang;
+        if (lang.isEmpty()) return base;
+        java.util.Locale locale = java.util.Locale.forLanguageTag(lang);
+        android.content.res.Configuration conf = new android.content.res.Configuration(base.getResources().getConfiguration());
+        conf.setLocale(locale);
+        java.util.Locale.setDefault(locale); // TextClock formats with the process default locale
+        return base.createConfigurationContext(conf);
+    }
+
     static Config load(Context c) {
         return new Config(c.getSharedPreferences(PREFS, Context.MODE_PRIVATE));
     }

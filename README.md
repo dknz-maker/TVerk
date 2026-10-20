@@ -13,6 +13,8 @@ A calm, ad-free home screen for **Android TV / Google TV**, styled after Apple T
 - **Calendar:** the current month, with weeks starting on your locale's first day.
 - **Photo backgrounds:** a new landscape every 15 minutes, with its location
   ([Bing image archive](https://www.bing.com)).
+- **Screensaver:** the same photos full screen with a slow drift, a large clock and dimmed
+  brightness. It replaces the stock screensaver, which on some TVs is a rainbow gradient or ads.
 - **Apps** in the order you choose, and **inputs** with HDMI-CEC device names (e.g. "PlayStation 4").
 - English and Russian, following the system language or set separately.
 - Plain Java on the Android framework, with no libraries and no Gradle. The APK is about 50 KB and
@@ -38,7 +40,7 @@ git clone https://github.com/dknz-maker/tv-home.git && cd tv-home
 
 The TV asks **"Allow USB debugging?"**: tick *Always allow* and press OK. The script downloads the
 latest release (or uses your own build), installs it, lets it read YouTube's "now playing" info,
-and makes it the home screen.
+makes it the home screen and sets it as the screensaver.
 
 **Google TV:** the stock launcher outranks third-party home screens, so the script tells you if the
 Home button still opens it. Then run:
@@ -57,6 +59,7 @@ Prefer to install by hand? Download `tv-home.apk` from
 adb install -r tv-home.apk
 adb shell cmd notification allow_listener nz.home.tv/nz.home.tv.MediaListener
 adb shell cmd package set-home-activity nz.home.tv/.MainActivity
+adb shell settings put secure screensaver_components nz.home.tv/.PhotoDream   # optional
 ```
 
 ## Configure
@@ -95,6 +98,7 @@ Only the adb shell (or the system) can send this broadcast. The receiver require
 | Tide | Open-Meteo marine API (`sea_level_height_msl`), hourly. Highs and lows are refined with a parabola fit. It's a model, not official tide tables: times are good, heights are smoothed, so the card shows the state and times rather than metres. |
 | Moon | Calculated locally from the synodic month (reference new moon 2000-01-06). |
 | Photos | Bing's daily image archive (about 15 photos), cached on disk. The photo changes on each quarter hour. |
+| Screensaver | A `DreamService` that crossfades the cached photos every minute with a slow zoom and pan, dims the backlight (`setScreenBright(false)`) and shows the time, date and temperature. |
 
 ## Build from source
 
@@ -109,7 +113,8 @@ Each machine signs with its own local key (`tv-home.keystore`, git-ignored). To 
 release APK and your own build, `adb uninstall nz.home.tv` first.
 
 Code: `src/nz/home/tv/`. `MainActivity` is the UI, `History` and `MediaListener` handle continue
-watching, `Tide`, `Wallpapers`, `Config` and `ConfigReceiver` do what their names say. Strings live
+watching, `PhotoDream` is the screensaver, and `Tide`, `Wallpapers`, `Config` and `ConfigReceiver`
+do what their names say. Strings live
 in `res/values*/strings.xml`; to add a language, add `res/values-xx/strings.xml`.
 
 ## Optional: debloat the TV

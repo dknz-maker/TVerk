@@ -28,14 +28,14 @@ adb shell dumpsys meminfo | sed -n '/Total PSS by process/,/^$/p' | head -30   #
 | `com.smartdevice.myapp`, `com.smartdevice.leanbacklauncher.customizer`, `com.mediatek.android.leanbacklauncher.partnercustomizer` | Partner promo rows |
 | `android.autoinstalls.config.google.gtvpai` | Silent installer for promoted apps |
 | `com.google.android.feedback`, `com.google.android.play.games`, `com.android.printspooler`, `com.android.dynsystem` | Not useful on a TV |
-| `com.google.android.apps.tv.dreamx` | Ambient mode with promoted content (~150 MB RAM); set a basic screensaver first, see below |
+| `com.google.android.apps.tv.dreamx` | Ambient mode with promoted content (~150 MB RAM); switch the screensaver first, see below |
 | `com.google.android.apps.tv.launcherx`, `com.google.android.videos` | Stock Google TV home and its recommendation feed (~160 MB RAM) |
 | `com.google.android.tungsten.setupwraith` | Setup wizard; with launcherx gone it loops a "recovery" home screen. Only remove after setup is complete |
 
 ```sh
-# basic screensaver instead of the ambient mode
-adb shell settings put secure screensaver_components com.android.dreams.basic/.Colors
-adb shell settings put secure screensaver_default_component com.android.dreams.basic/.Colors
+# TV Home's photo screensaver instead of the ambient mode (install.sh does this)
+adb shell settings put secure screensaver_components nz.home.tv/.PhotoDream
+adb shell settings put secure screensaver_default_component nz.home.tv/.PhotoDream
 
 for p in com.smartdevice.recommendation com.smartdevice.dailyshortcut ...; do
   adb shell pm uninstall -k --user 0 "$p"

@@ -74,6 +74,10 @@ if [ "$MODE" = --replace-stock ]; then
     fi
 fi
 
+# Photo screensaver (dimmed, slowly drifting photos + clock) instead of the stock one.
+tv settings put secure screensaver_components "$PKG/.PhotoDream" >/dev/null
+tv settings put secure screensaver_default_component "$PKG/.PhotoDream" >/dev/null
+
 tv cmd package set-home-activity "$PKG/.MainActivity" >/dev/null
 home=$(tv cmd package resolve-activity --brief -c android.intent.category.HOME -a android.intent.action.MAIN | tail -1)
 tv input keyevent KEYCODE_HOME
