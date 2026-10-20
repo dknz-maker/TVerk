@@ -490,6 +490,8 @@ public class MainActivity extends Activity {
         TextView title = text(getString(R.string.tide_title, cfg.tideName), 13, TEXT);
         title.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         tideState = text("", 17, TEXT);
+        tideState.setSingleLine(true);
+        tideState.setEllipsize(TextUtils.TruncateAt.END);
         tideState.setPadding(0, px(4), 0, 0);
         tideCurve = new Tide.CurveView(this);
         tideNext = text("", 11, DIM);
@@ -525,13 +527,13 @@ public class MainActivity extends Activity {
             tideState.setText("—");
             tideNext.setText("");
         } else {
-            tideState.setText(next.high ? R.string.tide_rising : R.string.tide_falling);
-            if (prev != null) {
-                int pct = (int) Math.round(100 * (tide.at(now) - Math.min(prev.height, next.height))
-                        / Math.max(0.01, Math.abs(next.height - prev.height)));
-                tideState.append(span("  " + getString(R.string.tide_progress, Math.max(0, Math.min(100, pct)),
-                        getString(next.high ? R.string.tide_high_word : R.string.tide_low_word)), 11));
-            }
+            long mins = Math.max(0, (next.time - now) / 60_000);
+            String left = mins >= 60
+                    ? getString(R.string.duration_hm, (int) (mins / 60), (int) (mins % 60))
+                    : getString(R.string.duration_m, (int) mins);
+            // "↑ 4 h 27 min until high tide": arrow and time large, the rest small
+            tideState.setText((next.high ? "↑ " : "↓ ") + left);
+            tideState.append(span("  " + getString(next.high ? R.string.tide_until_high : R.string.tide_until_low), 11));
             StringBuilder sb = new StringBuilder();
             int shown = 0;
             for (Tide.Turn t : tide.turns()) {

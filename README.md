@@ -9,7 +9,7 @@ A calm, ad-free home screen for **Android TV / Google TV**, styled after Apple T
   stopped. Works whether you're signed in or watching as a guest.
 - **Weather:** current conditions plus a 10-day forecast ([Open-Meteo](https://open-meteo.com), no
   API key). On clear nights it shows the real **moon phase**, mirrored in the southern hemisphere.
-- **Tide:** rising or falling, the next high and low, and a 24-hour curve for a spot you choose.
+- **Tide:** time until the next high or low tide, the next turns, and a 24-hour curve for a spot you choose.
 - **Calendar:** the current month, with weeks starting on your locale's first day.
 - **Photo backgrounds:** a new landscape every 15 minutes, with its location
   ([Bing image archive](https://www.bing.com)).

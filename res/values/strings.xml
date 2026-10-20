@@ -11,11 +11,10 @@
     <string name="hi_lo">H %1$d°  L %2$d°</string>
 
     <string name="tide_title">🌊 %s tide</string>
-    <string name="tide_rising">Rising ↑</string>
-    <string name="tide_falling">Falling ↓</string>
-    <string name="tide_progress">%1$d%% of the way to %2$s</string>
-    <string name="tide_high_word">high</string>
-    <string name="tide_low_word">low</string>
+    <string name="tide_until_high">until high tide</string>
+    <string name="tide_until_low">until low tide</string>
+    <string name="duration_hm">%1$d h %2$d min</string>
+    <string name="duration_m">%d min</string>
     <string name="tide_next_high">High %s</string>
     <string name="tide_next_low">Low %s</string>
 
