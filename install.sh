@@ -1,17 +1,17 @@
 #!/bin/bash
-# Installs TV Home on an Android TV / Google TV over the network and makes it the home screen.
+# Installs TVerk on an Android TV / Google TV over the network and makes it the home screen.
 #
 #   ./install.sh 192.168.1.50                  # install + set as home
 #   ./install.sh 192.168.1.50 --replace-stock  # also disable the stock launcher (needed on Google TV)
 #   ./install.sh 192.168.1.50 --restore-stock  # re-enable the stock launcher and switch back to it
 #
-# Uses build/tv-home.apk if you built it, otherwise downloads the latest release.
+# Uses build/tverk.apk if you built it, otherwise downloads the latest release.
 # On the TV first: Settings > System > About > press "Build" 7 times, then
 # Developer options > USB debugging ON (and Network debugging, if listed).
 set -euo pipefail
 cd "$(dirname "$0")"
 
-REPO="dknz-maker/tv-home"
+REPO="dknz-maker/TVerk"
 PKG="nz.home.tv"
 # Stock launchers that outrank a third-party home screen. Disabled with `pm disable-user`, which is
 # fully reversible (see --restore-stock); nothing is uninstalled.
@@ -47,15 +47,15 @@ if [ "$MODE" = --restore-stock ]; then
             break
         fi
     done
-    echo "Stock launcher restored. To remove TV Home completely: adb -s $TV uninstall $PKG"
+    echo "Stock launcher restored. To remove TVerk completely: adb -s $TV uninstall $PKG"
     exit 0
 fi
 
-APK=build/tv-home.apk
+APK=build/tverk.apk
 if [ ! -f "$APK" ]; then
-    APK=$(mktemp -t tv-home).apk
+    APK=$(mktemp -t tverk).apk
     echo "Downloading the latest release..."
-    curl -fsSL "https://github.com/$REPO/releases/latest/download/tv-home.apk" -o "$APK"
+    curl -fsSL "https://github.com/$REPO/releases/latest/download/tverk.apk" -o "$APK"
 fi
 
 echo "Installing..."
@@ -83,7 +83,7 @@ home=$(tv cmd package resolve-activity --brief -c android.intent.category.HOME -
 tv input keyevent KEYCODE_HOME
 
 if [ "$home" = "$PKG/.MainActivity" ]; then
-    echo "Done - TV Home is the home screen."
+    echo "Done - TVerk is the home screen."
 else
     echo "Installed, but the home button still opens: $home"
     echo "The stock launcher takes priority on this TV. Re-run with --replace-stock to disable it (reversible)."

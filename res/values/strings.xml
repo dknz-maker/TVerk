@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TV Home</string>
+    <string name="app_name">TVerk</string>
     <string name="continue_watching">Continue watching</string>
     <string name="continue_empty">Videos you play on YouTube will show up here</string>
     <string name="forecast_title">%s · next 10 days</string>

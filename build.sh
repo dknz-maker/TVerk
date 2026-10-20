@@ -1,7 +1,7 @@
 #!/bin/bash
 # Builds and signs the APK with the Android SDK command-line tools directly (no Gradle).
 #
-#   ./build.sh              -> build/tv-home.apk
+#   ./build.sh              -> build/tverk.apk
 #   ./build.sh install      -> also installs it on the connected device (adb)
 #
 # Needs: Android SDK (build-tools + any platform >= 30) and a JDK 11+.
@@ -44,13 +44,13 @@ javac -nowarn -Xlint:none --release 11 -classpath "$PLATFORM" -d build/classes \
 
 # Local signing key (git-ignored). Each machine gets its own; reinstalling over an APK signed
 # with a different key requires `adb uninstall nz.home.tv` first.
-KEYSTORE=${KEYSTORE:-tv-home.keystore}
+KEYSTORE=${KEYSTORE:-tverk.keystore}
 KS_PASS=${KS_PASS:-tvhome-local}
 [ -f "$KEYSTORE" ] || keytool -genkeypair -keystore "$KEYSTORE" -storepass "$KS_PASS" -keypass "$KS_PASS" \
-    -alias tvhome -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=TV Home" >/dev/null 2>&1
-"$BT/apksigner" sign --ks "$KEYSTORE" --ks-pass "pass:$KS_PASS" --out build/tv-home.apk build/aligned.apk
-echo "built build/tv-home.apk ($(du -h build/tv-home.apk | cut -f1), v$VERSION_NAME)"
+    -alias tvhome -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=TVerk" >/dev/null 2>&1
+"$BT/apksigner" sign --ks "$KEYSTORE" --ks-pass "pass:$KS_PASS" --out build/tverk.apk build/aligned.apk
+echo "built build/tverk.apk ($(du -h build/tverk.apk | cut -f1), v$VERSION_NAME)"
 
 if [ "${1:-}" = install ]; then
-    adb install -r build/tv-home.apk
+    adb install -r build/tverk.apk
 fi

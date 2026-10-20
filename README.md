@@ -1,4 +1,4 @@
-# TV Home
+# TVerk
 
 A calm, ad-free home screen for **Android TV / Google TV**, styled after Apple TV.
 
@@ -34,7 +34,7 @@ debugging** (and **Network debugging**, if listed). Note the TV's IP address in 
 `apt install adb`, or the Android SDK):
 
 ```sh
-git clone https://github.com/dknz-maker/tv-home.git && cd tv-home
+git clone https://github.com/dknz-maker/TVerk.git && cd TVerk
 ./install.sh 192.168.1.50                    # your TV's IP
 ```
 
@@ -52,11 +52,11 @@ Home button still opens it. Then run:
 
 `--replace-stock` uses `pm disable-user`: nothing is uninstalled, and `--restore-stock` puts it back.
 
-Prefer to install by hand? Download `tv-home.apk` from
-[Releases](https://github.com/dknz-maker/tv-home/releases), then:
+Prefer to install by hand? Download `tverk.apk` from
+[Releases](https://github.com/dknz-maker/TVerk/releases), then:
 
 ```sh
-adb install -r tv-home.apk
+adb install -r tverk.apk
 adb shell cmd notification allow_listener nz.home.tv/nz.home.tv.MediaListener
 adb shell cmd package set-home-activity nz.home.tv/.MainActivity
 adb shell settings put secure screensaver_components nz.home.tv/.PhotoDream   # optional
@@ -105,11 +105,11 @@ Only the adb shell (or the system) can send this broadcast. The receiver require
 Needs the Android SDK (build-tools and any platform ≥ 30) and JDK 11+. No Gradle:
 
 ```sh
-./build.sh            # -> build/tv-home.apk
+./build.sh            # -> build/tverk.apk
 ./build.sh install    # build and adb install
 ```
 
-Each machine signs with its own local key (`tv-home.keystore`, git-ignored). To switch between the
+Each machine signs with its own local key (`tverk.keystore`, git-ignored). To switch between the
 release APK and your own build, `adb uninstall nz.home.tv` first.
 
 Code: `src/nz/home/tv/`. `MainActivity` is the UI, `History` and `MediaListener` handle continue

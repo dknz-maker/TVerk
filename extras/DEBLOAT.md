@@ -1,6 +1,6 @@
 # Optional: debloating the TV
 
-TV Home only replaces the home screen. The ads, telemetry and vendor services that came with the TV
+TVerk only replaces the home screen. The ads, telemetry and vendor services that came with the TV
 keep running unless you turn them off. This is what I did on a **JVC 4K Smart TV (NZ)**, which is a
 Skyworth-made Google TV (Android TV 11, MediaTek/MStar M7332, 1.8 GB RAM). Treat it as an example:
 package names differ between brands, so check what's on your own TV first.
@@ -33,7 +33,7 @@ adb shell dumpsys meminfo | sed -n '/Total PSS by process/,/^$/p' | head -30   #
 | `com.google.android.tungsten.setupwraith` | Setup wizard; with launcherx gone it loops a "recovery" home screen. Only remove after setup is complete |
 
 ```sh
-# TV Home's photo screensaver instead of the ambient mode (install.sh does this)
+# TVerk's photo screensaver instead of the ambient mode (install.sh does this)
 adb shell settings put secure screensaver_components nz.home.tv/.PhotoDream
 adb shell settings put secure screensaver_default_component nz.home.tv/.PhotoDream
 
