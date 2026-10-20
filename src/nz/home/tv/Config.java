@@ -46,7 +46,9 @@ final class Config {
         tideLat = num(p.getString("tide_lat", null), -36.7166);
         tideLon = num(p.getString("tide_lon", null), 174.7500);
         captions = !"false".equalsIgnoreCase(p.getString("captions", "true"));
-        market = p.getString("market", "en-US");
+        // Goes into a URL and a cache file name, so only accept the "xx-XX" form.
+        String mkt = p.getString("market", "en-US");
+        market = mkt.matches("[A-Za-z]{2}-[A-Za-z]{2}") ? mkt : "en-US";
         order = csv(p.getString("order", DEFAULT_ORDER));
         hide = new HashSet<>(csv(p.getString("hide", "")));
         hide.add(SELF);

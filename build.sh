@@ -42,12 +42,22 @@ javac -nowarn -Xlint:none --release 11 -classpath "$PLATFORM" -d build/classes \
 (cd build/dex && zip -q ../unsigned.apk classes.dex)
 "$BT/zipalign" -f 4 build/unsigned.apk build/aligned.apk
 
-# Local signing key (git-ignored). Each machine gets its own; reinstalling over an APK signed
-# with a different key requires `adb uninstall nz.home.tv` first.
+# Local signing key (git-ignored). Each machine gets its own, with a random password kept next to
+# it in $KEYSTORE.pass (also git-ignored, owner-only). Reinstalling over an APK signed with a
+# different key requires `adb uninstall nz.home.tv` first.
 KEYSTORE=${KEYSTORE:-tverk.keystore}
-KS_PASS=${KS_PASS:-tvhome-local}
-[ -f "$KEYSTORE" ] || keytool -genkeypair -keystore "$KEYSTORE" -storepass "$KS_PASS" -keypass "$KS_PASS" \
-    -alias tvhome -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=TVerk" >/dev/null 2>&1
+if [ -z "${KS_PASS:-}" ]; then
+    if [ -f "$KEYSTORE.pass" ]; then
+        KS_PASS=$(cat "$KEYSTORE.pass")
+    elif [ -f "$KEYSTORE" ]; then
+        KS_PASS=tvhome-local   # keystores made by older versions of this script
+    else
+        KS_PASS=$(openssl rand -hex 24)
+        (umask 077 && printf '%s' "$KS_PASS" > "$KEYSTORE.pass")
+    fi
+fi
+[ -f "$KEYSTORE" ] || (umask 077 && keytool -genkeypair -keystore "$KEYSTORE" -storepass "$KS_PASS" -keypass "$KS_PASS" \
+    -alias tvhome -keyalg RSA -keysize 3072 -validity 10000 -dname "CN=TVerk" >/dev/null 2>&1)
 "$BT/apksigner" sign --ks "$KEYSTORE" --ks-pass "pass:$KS_PASS" --out build/tverk.apk build/aligned.apk
 echo "built build/tverk.apk ($(du -h build/tverk.apk | cut -f1), v$VERSION_NAME)"
 

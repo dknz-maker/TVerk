@@ -62,6 +62,11 @@ adb shell cmd package set-home-activity nz.home.tv/.MainActivity
 adb shell settings put secure screensaver_components nz.home.tv/.PhotoDream   # optional
 ```
 
+**Afterwards** you can switch **Network debugging** (and USB debugging) off again in Developer
+options. While it's on, any computer on your network can ask the TV for debugging access; the TV
+only allows computers you've approved on screen, but leaving it off is safer. Switch it back on
+when you want to change settings or update.
+
 ## Configure
 
 Settings are changed over adb. The home screen refreshes with the new values:
@@ -100,6 +105,22 @@ Only the adb shell (or the system) can send this broadcast. The receiver require
 | Photos | Bing's daily image archive (about 15 photos), cached on disk. The photo changes on each quarter hour. |
 | Screensaver | A `DreamService` that crossfades the cached photos every minute with a slow zoom and pan, dims the backlight (`setScreenBright(false)`) and shows the time, date and temperature. |
 
+## Privacy and security
+
+- Every network call is HTTPS, with no cookies, accounts or identifiers. Open-Meteo receives the
+  weather and tide coordinates; YouTube receives the title and channel of a video you watched (once,
+  to find its ID); Bing receives the photo market.
+- Watch history, positions and thumbnails stay in the app's private storage and are never uploaded.
+  `allowBackup` is off, so they aren't copied into cloud backups either.
+- The notification listener is only used to reach media sessions, and only YouTube's session is
+  read. Notifications themselves are ignored.
+- Settings can only come from the adb shell (`android.permission.DUMP`, see above). Other
+  components are protected by system-only permissions (`BIND_NOTIFICATION_LISTENER_SERVICE`,
+  `BIND_DREAM_SERVICE`).
+- Release APKs are signed with this certificate (SHA-256):
+  `fc0046c77dc6d0545e72197b5b1fb5cc92e9fef409cfd221ed91f5fe3bc75fc5`.
+  Check with `apksigner verify --print-certs tverk.apk`.
+
 ## Build from source
 
 Needs the Android SDK (build-tools and any platform ≥ 30) and JDK 11+. No Gradle:
@@ -109,8 +130,9 @@ Needs the Android SDK (build-tools and any platform ≥ 30) and JDK 11+. No Grad
 ./build.sh install    # build and adb install
 ```
 
-Each machine signs with its own local key (`tverk.keystore`, git-ignored). To switch between the
-release APK and your own build, `adb uninstall nz.home.tv` first.
+Each machine signs with its own local key (`tverk.keystore`, with a random password in
+`tverk.keystore.pass`; both git-ignored). To switch between the release APK and your own build,
+`adb uninstall nz.home.tv` first.
 
 Code: `src/nz/home/tv/`. `MainActivity` is the UI, `History` and `MediaListener` handle continue
 watching, `PhotoDream` is the screensaver, and `Tide`, `Wallpapers`, `Config` and `ConfigReceiver`

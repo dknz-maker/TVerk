@@ -53,7 +53,7 @@ fi
 
 APK=build/tverk.apk
 if [ ! -f "$APK" ]; then
-    APK=$(mktemp -t tverk).apk
+    APK=$(mktemp -d "${TMPDIR:-/tmp}/tverk.XXXXXX")/tverk.apk
     echo "Downloading the latest release..."
     curl -fsSL "https://github.com/$REPO/releases/latest/download/tverk.apk" -o "$APK"
 fi

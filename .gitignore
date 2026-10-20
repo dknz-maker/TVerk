@@ -1,5 +1,6 @@
 build/
 *.keystore
+*.keystore.pass
 *.jks
 .DS_Store
 .idea/

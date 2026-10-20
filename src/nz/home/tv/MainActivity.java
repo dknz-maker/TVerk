@@ -443,16 +443,7 @@ public class MainActivity extends Activity {
         weatherFetched = now;
         io.execute(() -> {
             try {
-                HttpURLConnection con = (HttpURLConnection) new URL(cfg.weatherUrl()).openConnection();
-                con.setConnectTimeout(8000);
-                con.setReadTimeout(8000);
-                String body;
-                try (InputStream in = con.getInputStream()) {
-                    java.io.ByteArrayOutputStream buf = new java.io.ByteArrayOutputStream();
-                    byte[] chunk = new byte[8192];
-                    for (int n; (n = in.read(chunk)) > 0; ) buf.write(chunk, 0, n);
-                    body = buf.toString("UTF-8");
-                }
+                String body = httpGet(cfg.weatherUrl());
                 new JSONObject(body); // validate before caching
                 Files.write(cache.toPath(), body.getBytes(StandardCharsets.UTF_8));
                 ui.post(() -> renderWeather(body));
@@ -477,7 +468,7 @@ public class MainActivity extends Activity {
         try (InputStream in = con.getInputStream()) {
             java.io.ByteArrayOutputStream buf = new java.io.ByteArrayOutputStream();
             byte[] chunk = new byte[8192];
-            for (int n; (n = in.read(chunk)) > 0; ) buf.write(chunk, 0, n);
+            for (int n; (n = in.read(chunk)) > 0 && buf.size() < 2_000_000; ) buf.write(chunk, 0, n);
             return buf.toString("UTF-8");
         }
     }

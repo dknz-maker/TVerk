@@ -112,7 +112,7 @@ final class Wallpapers {
         try (InputStream in = con.getInputStream()) {
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
             byte[] chunk = new byte[8192];
-            for (int n; (n = in.read(chunk)) > 0; ) buf.write(chunk, 0, n);
+            for (int n; (n = in.read(chunk)) > 0 && buf.size() < 2_000_000; ) buf.write(chunk, 0, n);
             return buf.toString("UTF-8");
         }
     }

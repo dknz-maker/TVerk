@@ -84,7 +84,8 @@ final class History {
             }
             saveThumb(c, md, id, new File(c.getFilesDir(), thumb));
             Files.write(file(c).toPath(), out.toString().getBytes(StandardCharsets.UTF_8));
-            Log.i(TAG, "recorded: " + title + " / " + artist + " id=" + id);
+            // No titles in the log: logcat ends up in bug reports.
+            Log.i(TAG, "recorded a video (id " + (id == null ? "not found" : "found") + ")");
         } catch (Exception e) {
             Log.w(TAG, "history record failed", e);
         }
@@ -101,7 +102,7 @@ final class History {
                 if (!thumb.equals(o.optString("thumb"))) continue;
                 o.put("pos", posMs);
                 Files.write(file(c).toPath(), arr.toString().getBytes(StandardCharsets.UTF_8));
-                Log.i(TAG, "position " + title + " = " + posMs / 1000 + "s");
+                Log.i(TAG, "position saved: " + posMs / 1000 + "s");
                 return;
             }
         } catch (Exception e) {
