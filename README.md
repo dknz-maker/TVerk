@@ -64,7 +64,7 @@ adb shell settings put secure screensaver_components nz.home.tv/.PhotoDream   # 
 
 ## Configure
 
-Settings are changed over adb. The home screen restarts with the new values:
+Settings are changed over adb. The home screen refreshes with the new values:
 
 ```sh
 adb shell am broadcast -a nz.home.tv.CONFIG -n nz.home.tv/.ConfigReceiver \

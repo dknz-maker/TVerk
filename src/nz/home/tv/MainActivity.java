@@ -96,9 +96,18 @@ public class MainActivity extends Activity {
         return s.isEmpty() ? s : s.substring(0, 1).toUpperCase(Locale.getDefault()) + s.substring(1);
     }
 
+    private static java.lang.ref.WeakReference<MainActivity> current = new java.lang.ref.WeakReference<>(null);
+
+    /** Called by {@link ConfigReceiver} after settings change; re-reads config and language. */
+    static void recreateCurrent() {
+        MainActivity a = current.get();
+        if (a != null && !a.isDestroyed()) a.recreate();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        current = new java.lang.ref.WeakReference<>(this);
         density = getResources().getDisplayMetrics().density;
         GradientDrawable bg = new GradientDrawable(GradientDrawable.Orientation.TL_BR,
                 new int[]{0xFF1B2133, 0xFF0E1119, 0xFF07080C});

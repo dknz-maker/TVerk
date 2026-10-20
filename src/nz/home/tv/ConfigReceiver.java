@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Process;
 import android.util.Log;
 
 import java.io.File;
@@ -41,7 +40,8 @@ public class ConfigReceiver extends BroadcastReceiver {
         for (String f : new String[]{"weather.json", "tide.json"}) new File(context.getCacheDir(), f).delete();
         Log.i(History.TAG, "config updated: " + changed);
         setResultData("ok " + changed);
-        // Restart so every setting (including language) applies; Android relaunches the home screen.
-        new Handler(Looper.getMainLooper()).postDelayed(() -> Process.killProcess(Process.myPid()), 500);
+        // Rebuild the home screen in place so every setting (including language) applies. Restarting the
+        // process instead would briefly expose whatever is behind it (e.g. a "No Signal" Live TV screen).
+        new Handler(Looper.getMainLooper()).post(MainActivity::recreateCurrent);
     }
 }
