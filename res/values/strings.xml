@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TV Home</string>
+    <string name="continue_watching">Continue watching</string>
+    <string name="continue_empty">Videos you play on YouTube will show up here</string>
+    <string name="forecast_title">%s · next 10 days</string>
+    <string name="apps">Apps</string>
+    <string name="inputs">Inputs</string>
+    <string name="today">Today</string>
+    <string name="loading">Loading…</string>
+    <string name="hi_lo">H %1$d°  L %2$d°</string>
+
+    <string name="tide_title">🌊 %s tide</string>
+    <string name="tide_rising">Rising ↑</string>
+    <string name="tide_falling">Falling ↓</string>
+    <string name="tide_progress">%1$d%% of the way to %2$s</string>
+    <string name="tide_high_word">high</string>
+    <string name="tide_low_word">low</string>
+    <string name="tide_next_high">High %s</string>
+    <string name="tide_next_low">Low %s</string>
+
+    <!-- true forces a 24-hour clock; false follows the system setting -->
+    <bool name="force_24h">false</bool>
+
+    <!-- clear, mostly clear, partly cloudy, overcast, fog, drizzle, rain, snow, showers, snow showers, thunderstorms -->
+    <string-array name="weather">
+        <item>Clear</item>
+        <item>Mostly clear</item>
+        <item>Partly cloudy</item>
+        <item>Overcast</item>
+        <item>Fog</item>
+        <item>Drizzle</item>
+        <item>Rain</item>
+        <item>Snow</item>
+        <item>Showers</item>
+        <item>Snow showers</item>
+        <item>Thunderstorms</item>
+    </string-array>
+
+    <string-array name="moon">
+        <item>New moon</item>
+        <item>Waxing crescent</item>
+        <item>First quarter</item>
+        <item>Waxing gibbous</item>
+        <item>Full moon</item>
+        <item>Waning gibbous</item>
+        <item>Last quarter</item>
+        <item>Waning crescent</item>
+    </string-array>
+</resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TV Home</string>
+    <string name="continue_watching">Продолжить просмотр</string>
+    <string name="continue_empty">Здесь появятся видео, которые вы смотрите на YouTube</string>
+    <string name="forecast_title">%s · прогноз на 10 дней</string>
+    <string name="apps">Приложения</string>
+    <string name="inputs">Источники</string>
+    <string name="today">Сегодня</string>
+    <string name="loading">Загрузка…</string>
+    <string name="hi_lo">днём %1$d°, ночью %2$d°</string>
+
+    <string name="tide_title">🌊 %s · прилив</string>
+    <string name="tide_rising">Прилив ↑</string>
+    <string name="tide_falling">Отлив ↓</string>
+    <string name="tide_progress">%1$d%% до %2$s</string>
+    <string name="tide_high_word">полной воды</string>
+    <string name="tide_low_word">малой воды</string>
+    <string name="tide_next_high">Полная %s</string>
+    <string name="tide_next_low">Малая %s</string>
+
+    <bool name="force_24h">true</bool>
+
+    <string-array name="weather">
+        <item>Ясно</item>
+        <item>Малооблачно</item>
+        <item>Переменная облачность</item>
+        <item>Пасмурно</item>
+        <item>Туман</item>
+        <item>Морось</item>
+        <item>Дождь</item>
+        <item>Снег</item>
+        <item>Ливни</item>
+        <item>Снегопад</item>
+        <item>Гроза</item>
+    </string-array>
+
+    <string-array name="moon">
+        <item>Новолуние</item>
+        <item>Растущий серп</item>
+        <item>Первая четверть</item>
+        <item>Растущая луна</item>
+        <item>Полнолуние</item>
+        <item>Убывающая луна</item>
+        <item>Последняя четверть</item>
+        <item>Убывающий серп</item>
+    </string-array>
+</resources>
