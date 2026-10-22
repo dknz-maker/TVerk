@@ -29,8 +29,7 @@ adb shell dumpsys meminfo | sed -n '/Total PSS by process/,/^$/p' | head -30   #
 | `android.autoinstalls.config.google.gtvpai` | Silent installer for promoted apps |
 | `com.google.android.feedback`, `com.google.android.play.games`, `com.android.printspooler`, `com.android.dynsystem` | Not useful on a TV |
 | `com.google.android.apps.tv.dreamx` | Ambient mode with promoted content (~150 MB RAM); switch the screensaver first, see below |
-| `com.google.android.apps.tv.launcherx`, `com.google.android.videos` | Stock Google TV home and its recommendation feed (~160 MB RAM) |
-| `com.google.android.tungsten.setupwraith` | Setup wizard; with launcherx gone it loops a "recovery" home screen. Only remove after setup is complete |
+| `com.google.android.videos` | Google TV's movie and show recommendation feed |
 
 ```sh
 # TVerk's photo screensaver instead of the ambient mode (install.sh does this)
@@ -42,7 +41,14 @@ for p in com.smartdevice.recommendation com.smartdevice.dailyshortcut ...; do
 done
 ```
 
-**Kept on purpose:** the tuner/Live TV (`com.smartdevice.livetv`), TV input and MediaTek services,
+**Don't remove the stock launcher (`com.google.android.apps.tv.launcherx`) or the setup app
+(`com.google.android.tungsten.setupwraith`).** On this TV, Live TV reads the setup app's data every
+time it starts and crashes when it's missing. That breaks HDMI input switching and one-touch play
+(a PS4 turning the TV on and switching to itself). Without the launcher, the setup app loops a
+"recovery" home screen. I removed both at first and had to put them back. TVerk's
+`install.sh --replace-stock` keeps them installed and takes over the Home button instead.
+
+**Kept on purpose:** the stock launcher and setup app (above), the tuner/Live TV (`com.smartdevice.livetv`), TV input and MediaTek services,
 Bluetooth and remote pairing, Dolby audio, Google Play services, the Play Store, Chromecast
 (`com.google.android.apps.mediashell`), the remote service, the keyboard, WebView and Assistant/voice
 search (`com.google.android.katniss`). Removing those is what actually breaks TVs.

@@ -2,8 +2,8 @@
 # Installs TVerk on an Android TV / Google TV over the network and makes it the home screen.
 #
 #   ./install.sh 192.168.1.50                  # install + set as home
-#   ./install.sh 192.168.1.50 --replace-stock  # also disable the stock launcher (needed on Google TV)
-#   ./install.sh 192.168.1.50 --restore-stock  # re-enable the stock launcher and switch back to it
+#   ./install.sh 192.168.1.50 --replace-stock  # also take over the Home button (needed on Google TV)
+#   ./install.sh 192.168.1.50 --restore-stock  # give the Home button back to the stock launcher
 #
 # Uses build/tverk.apk if you built it, otherwise downloads the latest release.
 # On the TV first: Settings > System > About > press "Build" 7 times, then
@@ -13,11 +13,13 @@ cd "$(dirname "$0")"
 
 REPO="dknz-maker/TVerk"
 PKG="nz.home.tv"
-# Stock launchers that outrank a third-party home screen. Disabled with `pm disable-user`, which is
-# fully reversible (see --restore-stock); nothing is uninstalled.
+# Stock launchers that outrank a third-party home screen. They are left installed and enabled: on some
+# TVs other system apps depend on them (on Skyworth-made TVs, Live TV crashes without the Google TV
+# setup app, which breaks HDMI switching). Instead, TVerk's accessibility service takes over Home.
+# Older versions of this script disabled them; --restore-stock re-enables them.
 STOCK_LAUNCHERS="com.google.android.apps.tv.launcherx com.google.android.tvlauncher"
-# On Google TV, the setup app keeps relaunching a "recovery" home while launcherx is disabled.
 GTV_SETUP="com.google.android.tungsten.setupwraith"
+HOME_KEEPER="$PKG/$PKG.HomeKeeper"
 
 TV=${1:-}
 MODE=${2:-}
@@ -36,7 +38,23 @@ done
 [ "$(adb -s "$TV" get-state 2>/dev/null)" = device ] || { echo "Could not connect to $TV (debugging enabled? same network?)" >&2; exit 1; }
 tv() { adb -s "$TV" shell "$@" | tr -d '\r'; }
 
+# Adds or removes TVerk's Home button service, keeping any other accessibility services.
+home_keeper() {
+    local cur new
+    cur=$(tv settings get secure enabled_accessibility_services)
+    [ "$cur" = null ] && cur=""
+    new=$(printf '%s' "$cur" | tr ':' '\n' | grep -v "^$HOME_KEEPER\$" | grep -v '^$' | paste -sd: - || true)
+    [ "$1" = on ] && new=${new:+$new:}$HOME_KEEPER
+    if [ -n "$new" ]; then
+        tv settings put secure enabled_accessibility_services "$new" >/dev/null
+        tv settings put secure accessibility_enabled 1 >/dev/null
+    else
+        tv settings delete secure enabled_accessibility_services >/dev/null
+    fi
+}
+
 if [ "$MODE" = --restore-stock ]; then
+    home_keeper off
     for p in $STOCK_LAUNCHERS $GTV_SETUP; do
         tv pm path "$p" >/dev/null 2>&1 && tv pm enable "$p" >/dev/null && echo "re-enabled $p"
     done
@@ -66,12 +84,8 @@ adb -s "$TV" install -r "$APK" >/dev/null || {
 tv cmd notification allow_listener "$PKG/$PKG.MediaListener" >/dev/null
 
 if [ "$MODE" = --replace-stock ]; then
-    for p in $STOCK_LAUNCHERS; do
-        tv pm path "$p" >/dev/null 2>&1 && tv pm disable-user --user 0 "$p" >/dev/null && echo "disabled $p"
-    done
-    if tv pm path "$GTV_SETUP" >/dev/null 2>&1 && [ "$(tv settings get secure user_setup_complete)" = 1 ]; then
-        tv pm disable-user --user 0 "$GTV_SETUP" >/dev/null && echo "disabled $GTV_SETUP (setup is complete; re-enabled by --restore-stock)"
-    fi
+    home_keeper on
+    echo "Home button: TVerk (accessibility service \"TVerk Home button\"; undo with --restore-stock)"
 fi
 
 # Photo screensaver (dimmed, slowly drifting photos + clock) instead of the stock one.
@@ -82,11 +96,11 @@ tv cmd package set-home-activity "$PKG/.MainActivity" >/dev/null
 home=$(tv cmd package resolve-activity --brief -c android.intent.category.HOME -a android.intent.action.MAIN | tail -1)
 tv input keyevent KEYCODE_HOME
 
-if [ "$home" = "$PKG/.MainActivity" ]; then
+if [ "$home" = "$PKG/.MainActivity" ] || [ "$MODE" = --replace-stock ]; then
     echo "Done - TVerk is the home screen."
 else
     echo "Installed, but the home button still opens: $home"
-    echo "The stock launcher takes priority on this TV. Re-run with --replace-stock to disable it (reversible)."
+    echo "The stock launcher takes priority on this TV. Re-run with --replace-stock to take over the Home button."
 fi
 cat <<EOF
 

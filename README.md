@@ -18,7 +18,7 @@ A calm, ad-free home screen for **Android TV / Google TV**, styled after Apple T
 - **Apps** in the order you choose, and **inputs** with HDMI-CEC device names (e.g. "PlayStation 4").
 - English and Russian, following the system language or set separately.
 - Plain Java on the Android framework, with no libraries and no Gradle. The APK is about 50 KB and
-  uses roughly 65 MB of RAM, compared with about 160 MB for the stock Google TV launcher.
+  uses roughly 55–65 MB of RAM.
 - No accounts, analytics or tracking. The only network calls are to Open-Meteo, Bing images and
   YouTube (thumbnails and video lookup).
 
@@ -46,11 +46,17 @@ makes it the home screen and sets it as the screensaver.
 Home button still opens it. Then run:
 
 ```sh
-./install.sh 192.168.1.50 --replace-stock    # disables the stock launcher (reversible)
-./install.sh 192.168.1.50 --restore-stock    # undo: re-enable it and switch back
+./install.sh 192.168.1.50 --replace-stock    # TVerk takes over the Home button
+./install.sh 192.168.1.50 --restore-stock    # undo: give Home back to the stock launcher
 ```
 
-`--replace-stock` uses `pm disable-user`: nothing is uninstalled, and `--restore-stock` puts it back.
+`--replace-stock` turns on TVerk's **Home button** accessibility service. It opens TVerk when you
+press Home, and whenever the stock home screen comes to the front (after a restart, or when you
+leave an app; you may see the stock screen for a moment). The stock launcher stays installed and
+enabled. Don't uninstall or disable it, or the Google TV setup app
+(`com.google.android.tungsten.setupwraith`): other system apps can depend on them. On Skyworth-made
+TVs (JVC and others), Live TV crashes without the setup app, which breaks HDMI input switching and
+one-touch play from consoles.
 
 Prefer to install by hand? Download `tverk.apk` from
 [Releases](https://github.com/dknz-maker/TVerk/releases), then:
@@ -114,6 +120,8 @@ Only the adb shell (or the system) can send this broadcast. The receiver require
   `allowBackup` is off, so they aren't copied into cloud backups either.
 - The notification listener is only used to reach media sessions, and only YouTube's session is
   read. Notifications themselves are ignored.
+- The optional Home button service (`--replace-stock`) only looks at the Home key and at which
+  screen comes to the front. It can't read screen content (`canRetrieveWindowContent="false"`).
 - Settings can only come from the adb shell (`android.permission.DUMP`, see above). Other
   components are protected by system-only permissions (`BIND_NOTIFICATION_LISTENER_SERVICE`,
   `BIND_DREAM_SERVICE`).
@@ -135,7 +143,7 @@ Each machine signs with its own local key (`tverk.keystore`, with a random passw
 `adb uninstall nz.home.tv` first.
 
 Code: `src/nz/home/tv/`. `MainActivity` is the UI, `History` and `MediaListener` handle continue
-watching, `PhotoDream` is the screensaver, and `Tide`, `Wallpapers`, `Config` and `ConfigReceiver`
+watching, `PhotoDream` is the screensaver, `HomeKeeper` is the Home button service, and `Tide`, `Wallpapers`, `Config` and `ConfigReceiver`
 do what their names say. Strings live
 in `res/values*/strings.xml`; to add a language, add `res/values-xx/strings.xml`.
 

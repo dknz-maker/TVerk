@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TVerk</string>
+    <string name="home_keeper">Кнопка «Домой» для TVerk</string>
+    <string name="home_keeper_description">Открывает TVerk по кнопке «Домой» вместо стандартного главного экрана. Не читает содержимое экрана.</string>
     <string name="continue_watching">Продолжить просмотр</string>
     <string name="continue_empty">Здесь появятся видео, которые вы смотрите на YouTube</string>
     <string name="forecast_title">%s · прогноз на 10 дней</string>
